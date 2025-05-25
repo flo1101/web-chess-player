@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_APP_API_URL: "/api"
+    container_name: chess_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - chess_network
+
+  backend:
+  mongodb:

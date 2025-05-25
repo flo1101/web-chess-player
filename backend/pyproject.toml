@@ -1,0 +1,2 @@
+[tool.pytest.init_options]
+pythonpath = "src"
