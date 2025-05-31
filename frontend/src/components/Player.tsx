@@ -16,6 +16,7 @@ const lightSquareStyle =  {
 
 function Player() {
     const [game, setGame] = useState<Chess>(new Chess())
+    const [fen, setFen] = useState<string>("")
 
     // Makes a move and updates the game state. Returns a move object or null if the move was illegal.
     function makeMove(move: Move) {
@@ -46,10 +47,40 @@ function Player() {
         return true;
     }
 
+    const resetBoard = () => {
+        setGame(new Chess())
+    }
+
+    const clearBoard = () => {
+        setGame(new Chess("8/8/8/8/8/8/8/8 w - - 0 1", { skipValidation: true }))
+    }
+
+    const setFenToBoard = () => {
+        try {
+            const newGame = new Chess(fen)
+            setGame(newGame)
+        } catch(e) {
+            console.debug("Invalid FEN:", e)
+            // TODO: Some UI feedback for invalid FENs
+        }
+    }
+
     return <div className="player">
-        <h1>Let's play some chess!</h1>
-        <div className={"board"}>
-            <Chessboard id="chessboard" position={game.fen()} onPieceDrop={onPieceDrop} customDarkSquareStyle={darkSquareStyle} customLightSquareStyle={lightSquareStyle}/>
+        <div className="board">
+            <div className={"board-bg"}>
+                <Chessboard id="chessboard" position={game.fen()} onPieceDrop={onPieceDrop} customDarkSquareStyle={darkSquareStyle} customLightSquareStyle={lightSquareStyle}/>
+            </div>
+            <div className={"board-controls"}>
+                <div className={"fen-upload"}>
+                    <div className={"fen-upload-input"}>
+                        <span>Position from FEN:</span>
+                        <input className={"text-input"} type="text" placeholder={"Paste here"} onChange={(e) => setFen(e.target.value)}/>
+                    </div>
+                    <button className={"btn"} onClick={setFenToBoard}>Set on Board</button>
+                </div>
+                <button className={"btn-primary"} onClick={clearBoard}>Clear</button>
+                <button className={"btn-primary"} onClick={resetBoard}>Reset</button>
+            </div>
         </div>
     </div>
 }
